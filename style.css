@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 1rem;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: normal;
+  background-color: black;
+}
+
+h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  font-size: 4rem;
+  color: whitesmoke;
+  letter-spacing: 0.1rem;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.calculator-container {
+  width: 90%;
+  height: 500px;
+  max-width: 400px;
+  padding: 1em;
+  background: lightgray;
+  border: 2px solid darkgray;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.input-display {
+  width: 100%;
+  height: 15%;
+  background-color: white;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.input {
+  font-size: 2rem;
+  padding-right: 0.5em;
+}
+
+.buttons-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  column-gap: 4px;
+  row-gap: 4px;
+  height: 80%;
+  margin: 10px 0;
+}
+
+.btn.lng {
+  grid-column: 1/span 2;
+}
+
+.btn {
+  font-size: 1.5rem;
+  background-color: whitesmoke;
+  opacity: 0.8;
+  /* border: none; */
+  transition: ease-in all 0.1s;
+}
+
+.btn:hover,
+.btn:focus {
+  transform: scale(1.02);
+  opacity: 1;
+  border: 1px solid;
+}
+
+.btn.operator {
+  background-color: #26afff;
+}
+
+.btn.orange {
+  background-color: orange;
+}
+
+.btn.green {
+  background-color: green;
+}
+
