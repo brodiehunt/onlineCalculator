@@ -4,6 +4,7 @@ const deleteBtn = document.getElementById('delete_btn');
 const refreshBtn = document.getElementById('refresh_btn');
 const equalBtn = document.getElementById('operate_btn');
 const switchSignBtn = document.getElementById('switch_sign_btn');
+const addFloatBtn = document.getElementById('add_float');
 const calcDisplayEl = document.getElementById('calc_display');
 
 // gloabl variables to maintain for calc
@@ -45,12 +46,15 @@ switchSignBtn.addEventListener('click', () => {
   changeSignOfDisplayNum();
 })
 
+addFloatBtn.addEventListener('click', () => {
+  addFloat();
+})
+
 
 
 function addToActiveNumber(num) {
   if (currentTotal && activeNumber == '' && currentOperator == '') {
     refreshCalc();
-    console.log("enter refresh block", activeNumber, currentTotal, currentOperator, canPerformOperation)
   }
   if (activeNumber.length <= 16) {
     activeNumber += num;
@@ -104,6 +108,33 @@ function changeSignOfDisplayNum() {
   }
 }
 
+// case 1 --> There is no currentTotal (first number case)
+
+// case 2 --> There is a currentTotal which is the current displayNum (after equals case)
+
+// case 3 --> there is a currentTotal but it is not display num; (in middle of operation case)
+
+function addFloat() {
+  const containsFloatAlready = activeNumber.includes('.');
+  if (containsFloatAlready) {
+    return;
+  }
+  if ((currentTotal === displayNumber) && (currentOperator === '')) {
+    refreshCalc();
+    activeNumber = '0.';
+    displayNumber = activeNumber
+    calcDisplayEl.innerText = displayNumber;
+  } else {
+    if (activeNumber === '') {
+      activeNumber = '0.'
+    } else {
+      activeNumber = activeNumber + '.';
+    }
+    displayNumber = activeNumber;
+    calcDisplayEl.innerText = displayNumber;
+  }
+}
+
 function refreshCalc() {
   displayNumber = '0';
   activeNumber = '';
@@ -116,7 +147,7 @@ function refreshCalc() {
 
 // Addition functions
 function addTwoNumbers() {
-  currentTotal = parseInt(currentTotal, 10) + parseInt(activeNumber, 10) + '';
+  currentTotal = parseFloat(currentTotal) + parseFloat(activeNumber) + '';
   displayNumber = currentTotal;
   activeNumber = '';
   calcDisplayEl.innerText = displayNumber;
@@ -136,7 +167,7 @@ function prepForAddition() {
 
 // Subtraction functions
 function subtractTwoNumbers() {
-  currentTotal = parseInt(currentTotal, 10) - parseInt(activeNumber, 10) + '';
+  currentTotal = parseFloat(currentTotal) - parseFloat(activeNumber) + '';
   displayNumber = currentTotal;
   activeNumber = '';
   calcDisplayEl.innerText = displayNumber;
@@ -157,7 +188,7 @@ function prepForSubtraction() {
 
 // Multiplication functions
 function multiplyTwoNumbers() {
-  currentTotal = parseInt(currentTotal, 10) * parseInt(activeNumber, 10) + '';
+  currentTotal = parseFloat(currentTotal) * parseFloat(activeNumber) + '';
   displayNumber = currentTotal;
   activeNumber = '';
   calcDisplayEl.innerText = displayNumber;
@@ -186,7 +217,7 @@ function divideTwoNumbers() {
     canPerformOperation = false;
     currentOperator = '';
   } else {
-    currentTotal = parseInt(currentTotal, 10) / parseInt(activeNumber, 10) + '';
+    currentTotal = parseFloat(currentTotal) / parseFloat(activeNumber) + '';
     displayNumber = currentTotal;
     activeNumber = '';
     calcDisplayEl.innerText = displayNumber;
