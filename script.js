@@ -41,6 +41,10 @@ equalBtn.addEventListener('click', () => {
   currentOperator = '';
 })
 
+switchSignBtn.addEventListener('click', () => {
+  changeSignOfDisplayNum();
+})
+
 
 
 function addToActiveNumber(num) {
@@ -57,13 +61,46 @@ function addToActiveNumber(num) {
 }
 
 function removeFromActiveNumber() {
-  if (activeNumber.length > 0) {
+  console.log(activeNumber.length);
+  if (activeNumber.length > 1) {
+    console.log(activeNumber);
     activeNumber = activeNumber.slice(0,-1);
     displayNumber = activeNumber;
+    console.log(activeNumber);
+    calcDisplayEl.innerText = displayNumber;
+  } else if (activeNumber.length === 1) {
+    activeNumber = '';
+    displayNumber = '0';
     calcDisplayEl.innerText = displayNumber;
   }
-  if (activeNumber = '') {
+  if (activeNumber === '') {
     canPerformOperation = false;
+  }
+}
+
+function changeSignOfDisplayNum() {
+  if (displayNumber === '0') {
+    return
+  } else if (displayNumber === activeNumber) {
+    if (activeNumber.charAt(0) == '-') {
+      activeNumber = activeNumber.substring(1);
+      displayNumber = activeNumber;
+      calcDisplayEl.innerText = displayNumber;
+    } else {
+      activeNumber = '-' + activeNumber;
+      displayNumber = activeNumber;
+      calcDisplayEl.innerText = displayNumber;
+    }
+  } else if (displayNumber === currentTotal) {
+    if (currentTotal.charAt(0) == '-') {
+      currentTotal = currentTotal.substring(1);
+      displayNumber = currentTotal;
+      calcDisplayEl.innerText = displayNumber;
+    } else {
+      currentTotal = '-' + currentTotal;
+      displayNumber = currentTotal;
+      calcDisplayEl.innerText = displayNumber;
+    }
   }
 }
 
