@@ -178,12 +178,22 @@ function prepForMultiplication() {
 
 // division functions
 function divideTwoNumbers() {
-  currentTotal = parseInt(currentTotal, 10) / parseInt(activeNumber, 10) + '';
-  displayNumber = currentTotal;
-  activeNumber = '';
-  calcDisplayEl.innerText = displayNumber;
-  canPerformOperation = false;
-  currentOperator = '';
+  if (activeNumber === '0') {
+    displayNumber = 'BRUH!';
+    calcDisplayEl.innerText = displayNumber;
+    activeNumber = '';
+    displayNumber = '0';
+    canPerformOperation = false;
+    currentOperator = '';
+  } else {
+    currentTotal = parseInt(currentTotal, 10) / parseInt(activeNumber, 10) + '';
+    displayNumber = currentTotal;
+    activeNumber = '';
+    calcDisplayEl.innerText = displayNumber;
+    canPerformOperation = false;
+    currentOperator = '';
+  }
+
 }
 
 function prepForDivision() {
