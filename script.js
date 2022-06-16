@@ -56,16 +56,33 @@ function addToActiveNumber(num) {
   if (currentTotal && activeNumber == '' && currentOperator == '') {
     refreshCalc();
   }
+
   if (activeNumber.length <= 16) {
     activeNumber += num;
     displayNumber = activeNumber
     calcDisplayEl.innerText = displayNumber;
   }
+
   canPerformOperation = true;
 }
 
+function checkResultLength(resultNum) {
+  if (Number.isInteger(resultNum)) {
+    if (resultNum.toString().length > 16) {
+      return false;
+    } else {
+      return resultNum.toString();
+    }
+  } else {
+    if (resultNum.toString().length > 17) {
+      return resultNum.toString().slice(0, 17);
+    } else {
+      return resultNum.toString();
+    }
+  }
+}
+
 function removeFromActiveNumber() {
-  console.log(activeNumber.length);
   if (activeNumber.length > 1) {
     console.log(activeNumber);
     activeNumber = activeNumber.slice(0,-1);
@@ -77,9 +94,11 @@ function removeFromActiveNumber() {
     displayNumber = '0';
     calcDisplayEl.innerText = displayNumber;
   }
+
   if (activeNumber === '') {
     canPerformOperation = false;
   }
+
 }
 
 function changeSignOfDisplayNum() {
@@ -108,17 +127,12 @@ function changeSignOfDisplayNum() {
   }
 }
 
-// case 1 --> There is no currentTotal (first number case)
-
-// case 2 --> There is a currentTotal which is the current displayNum (after equals case)
-
-// case 3 --> there is a currentTotal but it is not display num; (in middle of operation case)
-
 function addFloat() {
   const containsFloatAlready = activeNumber.includes('.');
   if (containsFloatAlready) {
     return;
   }
+
   if ((currentTotal === displayNumber) && (currentOperator === '')) {
     refreshCalc();
     activeNumber = '0.';
@@ -144,59 +158,15 @@ function refreshCalc() {
   canPerformOperation = false;
 }
 
-
-// Addition functions
-function addTwoNumbers() {
-  currentTotal = parseFloat(currentTotal) + parseFloat(activeNumber) + '';
-  displayNumber = currentTotal;
+function displayCalculation(newCurrentTotal) {
+  displayNumber = newCurrentTotal;
   activeNumber = '';
   calcDisplayEl.innerText = displayNumber;
   canPerformOperation = false;
   currentOperator = '';
 }
 
-function prepForAddition() {
-    if (!currentTotal) {
-      currentTotal = activeNumber;
-      activeNumber = '';
-      displayNumber = '';
-    }
-    canPerformOperation = false;
-    currentOperator = 'add';
-}
-
-// Subtraction functions
-function subtractTwoNumbers() {
-  currentTotal = parseFloat(currentTotal) - parseFloat(activeNumber) + '';
-  displayNumber = currentTotal;
-  activeNumber = '';
-  calcDisplayEl.innerText = displayNumber;
-  canPerformOperation = false;
-  currentOperator = ''
-}
-
-function prepForSubtraction() {
-  if (!currentTotal) {
-    currentTotal = activeNumber;
-    activeNumber = '';
-    displayNumber = '';
-  }
-
-  canPerformOperation = false;
-  currentOperator = 'subtract';
-}
-
-// Multiplication functions
-function multiplyTwoNumbers() {
-  currentTotal = parseFloat(currentTotal) * parseFloat(activeNumber) + '';
-  displayNumber = currentTotal;
-  activeNumber = '';
-  calcDisplayEl.innerText = displayNumber;
-  canPerformOperation = false;
-  currentOperator = '';
-}
-
-function prepForMultiplication() {
+function prepForOperation(operationType) {
   if (!currentTotal) {
     currentTotal = activeNumber;
     activeNumber = ''
@@ -204,57 +174,45 @@ function prepForMultiplication() {
   }
 
   canPerformOperation = false;
-  currentOperator = 'multiply';
+  currentOperator = operationType;
 }
-
-// division functions
-function divideTwoNumbers() {
-  if (activeNumber === '0') {
-    displayNumber = 'BRUH!';
-    calcDisplayEl.innerText = displayNumber;
-    activeNumber = '';
-    displayNumber = '0';
-    canPerformOperation = false;
-    currentOperator = '';
-  } else {
-    currentTotal = parseFloat(currentTotal) / parseFloat(activeNumber) + '';
-    displayNumber = currentTotal;
-    activeNumber = '';
-    calcDisplayEl.innerText = displayNumber;
-    canPerformOperation = false;
-    currentOperator = '';
-  }
-
-}
-
-function prepForDivision() {
-  if (!currentTotal) {
-    currentTotal = activeNumber;
-    activeNumber = ''
-    displayNumber = '';
-  }
-
-  canPerformOperation = false;
-  currentOperator = 'divide';
-}
-
-
-
-
 
 // Evalution function
 function performOperation() {
-  if (currentOperator == 'add') {
-    addTwoNumbers()
-  } else if (currentOperator == 'subtract') {
-    subtractTwoNumbers();
-  } else if (currentOperator == 'multiply') {
-    multiplyTwoNumbers();
-  } else if (currentOperator == 'divide') {
-    divideTwoNumbers();
+  if (activeNumber === '') {
+    return;
   }
-}
+  switch(currentOperator) {
+    case 'add':
+      currentTotal = checkResultLength(parseFloat(currentTotal) + parseFloat(activeNumber));
+      break;
+    case 'subtract':
+      currentTotal = checkResultLength(parseFloat(currentTotal) - parseFloat(activeNumber));
+      break;
+    case 'multiply':
+      currentTotal = checkResultLength(parseFloat(currentTotal) * parseFloat(activeNumber));
+      break;
+    case 'divide':
+      if (activeNumber === '0'){
+        refreshCalc();
+        calcDisplayEl.innerText = "BRUH!";
+        return;
+      }
+      currentTotal = checkResultLength(parseFloat(currentTotal) / parseFloat(activeNumber));
+      break;
+    default:
+      return;
+      break;
+  }
 
+  if (currentTotal === false) {
+    refreshCalc();
+    calcDisplayEl.innerText = "2 big 4 calc bro";
+    return;
+  }
+
+  displayCalculation(currentTotal);
+}
 
 // Control function based on event listeners
 function operatorBtnEvent(event) {
@@ -263,22 +221,7 @@ function operatorBtnEvent(event) {
       performOperation();
       currentOperator = event.target.value;
     } else {
-      switch(event.target.value) {
-        case 'add':
-          prepForAddition();
-          break;
-        case 'subtract':
-          prepForSubtraction();
-          break;
-        case 'multiply':
-          prepForMultiplication();
-          break;
-        case 'divide':
-          prepForDivision();
-          break;
-        default:
-          break;
-      }
+      prepForOperation(event.target.value); 
     } 
   }
 }
